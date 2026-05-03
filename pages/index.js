@@ -1,13 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
   const [busqueda, setBusqueda] = useState("");
+  const [productos, setProductos] = useState([]);
 
-  const productos = [
-    { id: 1, nombre: "Pava eléctrica", precio: 18000, vendedor: "ElectroJunín", whatsapp: "5492364000001" },
-    { id: 2, nombre: "Pava eléctrica acero", precio: 16500, vendedor: "HogarPlus", whatsapp: "5492364000002" },
-    { id: 3, nombre: "Mate artesanal", precio: 5000, vendedor: "MateArte", whatsapp: "5492364000003" }
-  ];
+  const [nuevo, setNuevo] = useState({
+    nombre: "",
+    precio: "",
+    vendedor: "",
+    whatsapp: "",
+  });
+
+  // cargar productos guardados
+  useEffect(() => {
+    const guardados = localStorage.getItem("productos");
+    if (guardados) {
+      setProductos(JSON.parse(guardados));
+    }
+  }, []);
+
+  // guardar productos
+  useEffect(() => {
+    localStorage.setItem("productos", JSON.stringify(productos));
+  }, [productos]);
+
+  const agregarProducto = () => {
+    if (!nuevo.nombre || !nuevo.precio || !nuevo.whatsapp) return;
+
+    setProductos([...productos, { ...nuevo, id: Date.now() }]);
+
+    setNuevo({
+      nombre: "",
+      precio: "",
+      vendedor: "",
+      whatsapp: "",
+    });
+  };
 
   const filtrados = productos.filter((p) =>
     p.nombre.toLowerCase().includes(busqueda.toLowerCase())
@@ -18,6 +46,7 @@ export default function Home() {
       <h1>Mercado Junín</h1>
       <p>Todo Junín en un solo mercado</p>
 
+      {/* BUSCADOR */}
       <input
         placeholder="Buscar productos..."
         value={busqueda}
@@ -25,6 +54,40 @@ export default function Home() {
         style={{ padding: 10, width: "100%", marginBottom: 20 }}
       />
 
+      {/* FORMULARIO */}
+      <div style={{ marginBottom: 30 }}>
+        <h3>Publicar producto</h3>
+
+        <input
+          placeholder="Nombre"
+          value={nuevo.nombre}
+          onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
+        />
+
+        <input
+          placeholder="Precio"
+          value={nuevo.precio}
+          onChange={(e) => setNuevo({ ...nuevo, precio: e.target.value })}
+        />
+
+        <input
+          placeholder="Vendedor"
+          value={nuevo.vendedor}
+          onChange={(e) => setNuevo({ ...nuevo, vendedor: e.target.value })}
+        />
+
+        <input
+          placeholder="WhatsApp (ej: 5492364...)"
+          value={nuevo.whatsapp}
+          onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })}
+        />
+
+        <button onClick={agregarProducto}>
+          Publicar
+        </button>
+      </div>
+
+      {/* LISTA */}
       {filtrados.map((p) => (
         <div key={p.id} style={{ border: "1px solid #ccc", padding: 15, marginBottom: 10 }}>
           <h3>{p.nombre}</h3>
