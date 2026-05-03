@@ -52,64 +52,122 @@ export default function Home() {
   );
 
   return (
-    <div style={{ padding: 20, fontFamily: "Arial" }}>
-      <h1>Mercado Junín</h1>
-      <p>Todo Junín en un solo mercado</p>
+  <div style={{ padding: 20, fontFamily: "Arial", background: "#f5f5f5" }}>
+    
+    <h1 style={{ textAlign: "center" }}>Mercado Junín</h1>
+    <p style={{ textAlign: "center", marginBottom: 20 }}>
+      Todo Junín en un solo mercado
+    </p>
 
-      <button onClick={invitarWhatsApp} style={{ marginBottom: 20 }}>
-        Invitar por WhatsApp
-      </button>
+    <button 
+      onClick={invitarWhatsApp} 
+      style={{
+        width: "100%",
+        padding: 12,
+        background: "#25D366",
+        color: "white",
+        border: "none",
+        borderRadius: 8,
+        marginBottom: 20,
+        fontWeight: "bold"
+      }}
+    >
+      Invitar por WhatsApp
+    </button>
+
+    <input
+      placeholder="Buscar productos..."
+      value={busqueda}
+      onChange={(e) => setBusqueda(e.target.value)}
+      style={{
+        padding: 12,
+        width: "100%",
+        marginBottom: 20,
+        borderRadius: 8,
+        border: "1px solid #ccc"
+      }}
+    />
+
+    <div style={{
+      background: "white",
+      padding: 15,
+      borderRadius: 10,
+      marginBottom: 30
+    }}>
+      <h3>Publicar producto</h3>
 
       <input
-        placeholder="Buscar productos..."
-        value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
-        style={{ padding: 10, width: "100%", marginBottom: 20 }}
+        placeholder="Nombre"
+        value={nuevo.nombre}
+        onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
+        style={{ width: "100%", marginBottom: 8, padding: 8 }}
       />
 
-      <div style={{ marginBottom: 30 }}>
-        <h3>Publicar producto</h3>
+      <input
+        placeholder="Precio"
+        value={nuevo.precio}
+        onChange={(e) => setNuevo({ ...nuevo, precio: e.target.value })}
+        style={{ width: "100%", marginBottom: 8, padding: 8 }}
+      />
 
-        <input
-          placeholder="Nombre"
-          value={nuevo.nombre}
-          onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
-        />
+      <input
+        placeholder="Vendedor"
+        value={nuevo.vendedor}
+        onChange={(e) => setNuevo({ ...nuevo, vendedor: e.target.value })}
+        style={{ width: "100%", marginBottom: 8, padding: 8 }}
+      />
 
-        <input
-          placeholder="Precio"
-          value={nuevo.precio}
-          onChange={(e) => setNuevo({ ...nuevo, precio: e.target.value })}
-        />
+      <input
+        placeholder="WhatsApp"
+        value={nuevo.whatsapp}
+        onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })}
+        style={{ width: "100%", marginBottom: 8, padding: 8 }}
+      />
 
-        <input
-          placeholder="Vendedor"
-          value={nuevo.vendedor}
-          onChange={(e) => setNuevo({ ...nuevo, vendedor: e.target.value })}
-        />
-
-        <input
-          placeholder="WhatsApp"
-          value={nuevo.whatsapp}
-          onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })}
-        />
-
-        <button onClick={agregarProducto}>
-          Publicar
-        </button>
-      </div>
-
-      {filtrados.map((p) => (
-        <div key={p.id} style={{ border: "1px solid #ccc", padding: 15, marginBottom: 10 }}>
-          <h3>{p.nombre}</h3>
-          <p><strong>${p.precio}</strong></p>
-          <p>{p.vendedor}</p>
-
-          <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
-            <button>Comprar por WhatsApp</button>
-          </a>
-        </div>
-      ))}
+      <button 
+        onClick={agregarProducto}
+        style={{
+          width: "100%",
+          padding: 10,
+          background: "#0070f3",
+          color: "white",
+          border: "none",
+          borderRadius: 8
+        }}
+      >
+        Publicar
+      </button>
     </div>
-  );
-}
+
+    {filtrados.map((p) => (
+      <div 
+        key={p.id} 
+        style={{
+          background: "white",
+          padding: 15,
+          borderRadius: 10,
+          marginBottom: 15,
+          boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+        }}
+      >
+        <h3>{p.nombre}</h3>
+        <p style={{ fontSize: 18, fontWeight: "bold" }}>${p.precio}</p>
+        <p>{p.vendedor}</p>
+
+        <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
+          <button style={{
+            width: "100%",
+            padding: 10,
+            background: "#25D366",
+            color: "white",
+            border: "none",
+            borderRadius: 8
+          }}>
+            Comprar por WhatsApp
+          </button>
+        </a>
+      </div>
+    ))}
+
+  </div>
+);
