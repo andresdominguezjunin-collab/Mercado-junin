@@ -1,5 +1,28 @@
 import { useState, useEffect } from "react";
 
+// 🔥 FIREBASE
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔥 CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyDDqfxHz2T8cRhm4YHgavgG6fe7_sio_G0",
+  authDomain: "mercado-junin.firebaseapp.com",
+  projectId: "mercado-junin",
+  storageBucket: "mercado-junin.firebasestorage.app",
+  messagingSenderId: "306782751540",
+  appId: "1:306782751540:web:fb0e957bfbba7a46293361",
+};
+
+// 🔥 INIT
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 export default function Home() {
   const [busqueda, setBusqueda] = useState("");
   const [productos, setProductos] = useState([]);
@@ -20,19 +43,25 @@ export default function Home() {
     window.open(url, "_blank");
   };
 
+  // 🔥 CARGAR DESDE FIREBASE
+  const cargarProductos = async () => {
+    const querySnapshot = await getDocs(collection(db, "productos"));
+    const lista = [];
+    querySnapshot.forEach((doc) => {
+      lista.push({ ...doc.data(), id: doc.id });
+    });
+    setProductos(lista);
+  };
+
   useEffect(() => {
-    const guardados = localStorage.getItem("productos");
-    if (guardados) setProductos(JSON.parse(guardados));
+    cargarProductos();
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem("productos", JSON.stringify(productos));
-  }, [productos]);
-
-  const agregarProducto = () => {
+  // 🔥 GUARDAR EN FIREBASE
+  const agregarProducto = async () => {
     if (!nuevo.nombre || !nuevo.precio || !nuevo.whatsapp) return;
 
-    setProductos([...productos, { ...nuevo, id: Date.now() }]);
+    await addDoc(collection(db, "productos"), nuevo);
 
     setNuevo({
       nombre: "",
@@ -41,6 +70,8 @@ export default function Home() {
       whatsapp: "",
       imagen: "",
     });
+
+    cargarProductos();
   };
 
   const filtrados = productos.filter((p) =>
@@ -48,40 +79,36 @@ export default function Home() {
   );
 
   return (
-    <div style={{ padding: 20, fontFamily: "Arial", background: "#f5f5f5" }}>
-      <h1 style={{ textAlign: "center" }}>Mercado Junín</h1>
-      <p style={{ textAlign: "center" }}>
-        Todo Junín en un solo mercado
-      </p>
-
-      <button
-        onClick={invitarWhatsApp}
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #667eea, #764ba2)",
+        padding: 20,
+        fontFamily: "Arial",
+      }}
+    >
+      <div
         style={{
-          width: "100%",
-          padding: 12,
-          background: "#25D366",
-          color: "white",
-          border: "none",
-          borderRadius: 8,
-          marginBottom: 20,
+          maxWidth: 500,
+          margin: "0 auto",
+          background: "white",
+          borderRadius: 20,
+          padding: 20,
         }}
       >
-        Invitar por WhatsApp
-      </button>
+        <h1 style={{ textAlign: "center" }}>Mercado Junín</h1>
 
-      <input
-        placeholder="Buscar productos..."
-        value={busqueda}
-        onChange={(e) => setBusqueda(e.target.value)}
-        style={{
-          width: "100%",
-          padding: 10,
-          marginBottom: 20,
-          borderRadius: 8,
-        }}
-      />
+        <button onClick={invitarWhatsApp} style={{ width: "100%", marginBottom: 20 }}>
+          Invitar por WhatsApp
+        </button>
 
-      <div style={{ background: "white", padding: 15, borderRadius: 10 }}>
+        <input
+          placeholder="Buscar productos..."
+          value={busqueda}
+          onChange={(e) => setBusqueda(e.target.value)}
+          style={{ width: "100%", marginBottom: 20 }}
+        />
+
         <h3>Publicar producto</h3>
 
         <input
@@ -123,37 +150,20 @@ export default function Home() {
           }}
         />
 
-        <button onClick={agregarProducto}>
-          Publicar
-        </button>
+        <button onClick={agregarProducto}>Publicar</button>
+
+        {filtrados.map((p) => (
+          <div key={p.id} style={{ marginTop: 20 }}>
+            {p.imagen && <img src={p.imagen} style={{ width: "100%" }} />}
+            <h3>{p.nombre}</h3>
+            <p>${p.precio}</p>
+            <p>{p.vendedor}</p>
+            <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
+              <button>Comprar por WhatsApp</button>
+            </a>
+          </div>
+        ))}
       </div>
-
-      {filtrados.map((p) => (
-        <div
-          key={p.id}
-          style={{
-            background: "white",
-            marginTop: 15,
-            padding: 15,
-            borderRadius: 10,
-          }}
-        >
-          {p.imagen && (
-            <img
-              src={p.imagen}
-              style={{ width: "100%", borderRadius: 10 }}
-            />
-          )}
-
-          <h3>{p.nombre}</h3>
-          <p>${p.precio}</p>
-          <p>{p.vendedor}</p>
-
-          <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
-            <button>Comprar por WhatsApp</button>
-          </a>
-        </div>
-      ))}
     </div>
   );
 }
