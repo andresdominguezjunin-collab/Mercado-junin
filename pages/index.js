@@ -181,6 +181,16 @@ export default function Home() {
             boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
           }}
         >
+          {p.imagen && (
+  <img
+    src={p.imagen}
+    style={{
+      width: "100%",
+      borderRadius: 10,
+      marginBottom: 10
+    }}
+  />
+)}
           <h3>{p.nombre}</h3>
           <p style={{ fontSize: 18, fontWeight: "bold" }}>${p.precio}</p>
           <p>{p.vendedor}</p>
