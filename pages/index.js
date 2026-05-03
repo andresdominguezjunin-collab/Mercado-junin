@@ -11,7 +11,7 @@ export default function Home() {
     whatsapp: "",
   });
 
-  const linkApp = "https://mercado-junin-XXXX.vercel.app";
+  const linkApp = "https://mercado-junin-nroi.vercel.app";
 
   const invitarWhatsApp = () => {
     const mensaje = `Mirá esta app para comprar en Junín 👇\n${linkApp}`;
