@@ -1,13 +1,5 @@
-const linkApp = "https://mercado-junin-XXXX.vercel.app"; // pegá tu link real
-<button onClick={invitarWhatsApp} style={{ marginBottom: 20 }}>
-  Invitar por WhatsApp
-</button>
-const invitarWhatsApp = () => {
-  const mensaje = `Mirá esta app para comprar en Junín 👇\n${linkApp}`;
-  const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
-  window.open(url, "_blank");
-};import { useState, useEffect } from "react";
-// actualizacion
+import { useState, useEffect } from "react";
+
 export default function Home() {
   const [busqueda, setBusqueda] = useState("");
   const [productos, setProductos] = useState([]);
@@ -19,19 +11,27 @@ export default function Home() {
     whatsapp: "",
   });
 
-  // cargar productos guardados
-  useEffect(() => {
-  if (typeof window !== "undefined") {
-    const guardados = localStorage.getItem("productos");
-    if (guardados) {
-      setProductos(JSON.parse(guardados));
-    }
-  }
-}, []);
+  const linkApp = "https://mercado-junin-XXXX.vercel.app";
 
-  // guardar productos
+  const invitarWhatsApp = () => {
+    const mensaje = `Mirá esta app para comprar en Junín 👇\n${linkApp}`;
+    const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+    window.open(url, "_blank");
+  };
+
   useEffect(() => {
-    localStorage.setItem("productos", JSON.stringify(productos));
+    if (typeof window !== "undefined") {
+      const guardados = localStorage.getItem("productos");
+      if (guardados) {
+        setProductos(JSON.parse(guardados));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("productos", JSON.stringify(productos));
+    }
   }, [productos]);
 
   const agregarProducto = () => {
@@ -56,7 +56,10 @@ export default function Home() {
       <h1>Mercado Junín</h1>
       <p>Todo Junín en un solo mercado</p>
 
-      {/* BUSCADOR */}
+      <button onClick={invitarWhatsApp} style={{ marginBottom: 20 }}>
+        Invitar por WhatsApp
+      </button>
+
       <input
         placeholder="Buscar productos..."
         value={busqueda}
@@ -64,7 +67,6 @@ export default function Home() {
         style={{ padding: 10, width: "100%", marginBottom: 20 }}
       />
 
-      {/* FORMULARIO */}
       <div style={{ marginBottom: 30 }}>
         <h3>Publicar producto</h3>
 
@@ -87,7 +89,7 @@ export default function Home() {
         />
 
         <input
-          placeholder="WhatsApp (ej: 5492364...)"
+          placeholder="WhatsApp"
           value={nuevo.whatsapp}
           onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })}
         />
@@ -97,7 +99,6 @@ export default function Home() {
         </button>
       </div>
 
-      {/* LISTA */}
       {filtrados.map((p) => (
         <div key={p.id} style={{ border: "1px solid #ccc", padding: 15, marginBottom: 10 }}>
           <h3>{p.nombre}</h3>
