@@ -13,11 +13,13 @@ export default function Home() {
 
   // cargar productos guardados
   useEffect(() => {
+  if (typeof window !== "undefined") {
     const guardados = localStorage.getItem("productos");
     if (guardados) {
       setProductos(JSON.parse(guardados));
     }
-  }, []);
+  }
+}, []);
 
   // guardar productos
   useEffect(() => {
