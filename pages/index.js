@@ -5,11 +5,12 @@ export default function Home() {
   const [productos, setProductos] = useState([]);
 
   const [nuevo, setNuevo] = useState({
-    nombre: "",
-    precio: "",
-    vendedor: "",
-    whatsapp: "",
-  });
+  nombre: "",
+  precio: "",
+  vendedor: "",
+  whatsapp: "",
+  imagen: "",
+});
 
   const linkApp = "https://TU-LINK-REAL.vercel.app";
 
