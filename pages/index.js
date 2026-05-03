@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+// actualizacion
 export default function Home() {
   const [busqueda, setBusqueda] = useState("");
   const [productos, setProductos] = useState([]);
