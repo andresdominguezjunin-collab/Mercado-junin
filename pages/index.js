@@ -112,7 +112,22 @@ export default function Home() {
   }}
   style={{ marginBottom: 10 }}
 />
-  <input
+      <input
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNuevo({ ...nuevo, imagen: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  }}
+  style={{ marginBottom: 10 }}
+/>
+        <input
           placeholder="Nombre"
           value={nuevo.nombre}
           onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
