@@ -154,7 +154,21 @@ export default function Home() {
           onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })}
           style={{ width: "100%", marginBottom: 8, padding: 8 }}
         />
-
+<input
+  type="file"
+  accept="image/*"
+  onChange={(e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNuevo({ ...nuevo, imagen: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  }}
+  style={{ width: "100%", marginBottom: 10 }}
+/>
         <button 
           onClick={agregarProducto}
           style={{
