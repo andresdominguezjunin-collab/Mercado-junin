@@ -1,4 +1,12 @@
-import { useState, useEffect } from "react";
+const linkApp = "https://mercado-junin-XXXX.vercel.app"; // pegá tu link real
+<button onClick={invitarWhatsApp} style={{ marginBottom: 20 }}>
+  Invitar por WhatsApp
+</button>
+const invitarWhatsApp = () => {
+  const mensaje = `Mirá esta app para comprar en Junín 👇\n${linkApp}`;
+  const url = `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, "_blank");
+};import { useState, useEffect } from "react";
 // actualizacion
 export default function Home() {
   const [busqueda, setBusqueda] = useState("");
