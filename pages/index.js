@@ -11,7 +11,7 @@ export default function Home() {
     whatsapp: "",
   });
 
-  const linkApp = "https://mercado-junin-nroi.vercel.app";
+  const linkApp = "https://TU-LINK-REAL.vercel.app";
 
   const invitarWhatsApp = () => {
     const mensaje = `Mirá esta app para comprar en Junín 👇\n${linkApp}`;
@@ -52,122 +52,123 @@ export default function Home() {
   );
 
   return (
-  <div style={{ padding: 20, fontFamily: "Arial", background: "#f5f5f5" }}>
-    
-    <h1 style={{ textAlign: "center" }}>Mercado Junín</h1>
-    <p style={{ textAlign: "center", marginBottom: 20 }}>
-      Todo Junín en un solo mercado
-    </p>
-
-    <button 
-      onClick={invitarWhatsApp} 
-      style={{
-        width: "100%",
-        padding: 12,
-        background: "#25D366",
-        color: "white",
-        border: "none",
-        borderRadius: 8,
-        marginBottom: 20,
-        fontWeight: "bold"
-      }}
-    >
-      Invitar por WhatsApp
-    </button>
-
-    <input
-      placeholder="Buscar productos..."
-      value={busqueda}
-      onChange={(e) => setBusqueda(e.target.value)}
-      style={{
-        padding: 12,
-        width: "100%",
-        marginBottom: 20,
-        borderRadius: 8,
-        border: "1px solid #ccc"
-      }}
-    />
-
-    <div style={{
-      background: "white",
-      padding: 15,
-      borderRadius: 10,
-      marginBottom: 30
-    }}>
-      <h3>Publicar producto</h3>
-
-      <input
-        placeholder="Nombre"
-        value={nuevo.nombre}
-        onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
-        style={{ width: "100%", marginBottom: 8, padding: 8 }}
-      />
-
-      <input
-        placeholder="Precio"
-        value={nuevo.precio}
-        onChange={(e) => setNuevo({ ...nuevo, precio: e.target.value })}
-        style={{ width: "100%", marginBottom: 8, padding: 8 }}
-      />
-
-      <input
-        placeholder="Vendedor"
-        value={nuevo.vendedor}
-        onChange={(e) => setNuevo({ ...nuevo, vendedor: e.target.value })}
-        style={{ width: "100%", marginBottom: 8, padding: 8 }}
-      />
-
-      <input
-        placeholder="WhatsApp"
-        value={nuevo.whatsapp}
-        onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })}
-        style={{ width: "100%", marginBottom: 8, padding: 8 }}
-      />
+    <div style={{ padding: 20, fontFamily: "Arial", background: "#f5f5f5" }}>
+      
+      <h1 style={{ textAlign: "center" }}>Mercado Junín</h1>
+      <p style={{ textAlign: "center", marginBottom: 20 }}>
+        Todo Junín en un solo mercado
+      </p>
 
       <button 
-        onClick={agregarProducto}
+        onClick={invitarWhatsApp} 
         style={{
           width: "100%",
-          padding: 10,
-          background: "#0070f3",
+          padding: 12,
+          background: "#25D366",
           color: "white",
           border: "none",
-          borderRadius: 8
+          borderRadius: 8,
+          marginBottom: 20,
+          fontWeight: "bold"
         }}
       >
-        Publicar
+        Invitar por WhatsApp
       </button>
-    </div>
 
-    {filtrados.map((p) => (
-      <div 
-        key={p.id} 
+      <input
+        placeholder="Buscar productos..."
+        value={busqueda}
+        onChange={(e) => setBusqueda(e.target.value)}
         style={{
-          background: "white",
-          padding: 15,
-          borderRadius: 10,
-          marginBottom: 15,
-          boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+          padding: 12,
+          width: "100%",
+          marginBottom: 20,
+          borderRadius: 8,
+          border: "1px solid #ccc"
         }}
-      >
-        <h3>{p.nombre}</h3>
-        <p style={{ fontSize: 18, fontWeight: "bold" }}>${p.precio}</p>
-        <p>{p.vendedor}</p>
+      />
 
-        <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
-          <button style={{
+      <div style={{
+        background: "white",
+        padding: 15,
+        borderRadius: 10,
+        marginBottom: 30
+      }}>
+        <h3>Publicar producto</h3>
+
+        <input
+          placeholder="Nombre"
+          value={nuevo.nombre}
+          onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
+          style={{ width: "100%", marginBottom: 8, padding: 8 }}
+        />
+
+        <input
+          placeholder="Precio"
+          value={nuevo.precio}
+          onChange={(e) => setNuevo({ ...nuevo, precio: e.target.value })}
+          style={{ width: "100%", marginBottom: 8, padding: 8 }}
+        />
+
+        <input
+          placeholder="Vendedor"
+          value={nuevo.vendedor}
+          onChange={(e) => setNuevo({ ...nuevo, vendedor: e.target.value })}
+          style={{ width: "100%", marginBottom: 8, padding: 8 }}
+        />
+
+        <input
+          placeholder="WhatsApp"
+          value={nuevo.whatsapp}
+          onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })}
+          style={{ width: "100%", marginBottom: 8, padding: 8 }}
+        />
+
+        <button 
+          onClick={agregarProducto}
+          style={{
             width: "100%",
             padding: 10,
-            background: "#25D366",
+            background: "#0070f3",
             color: "white",
             border: "none",
             borderRadius: 8
-          }}>
-            Comprar por WhatsApp
-          </button>
-        </a>
+          }}
+        >
+          Publicar
+        </button>
       </div>
-    ))}
 
-  </div>
-);
+      {filtrados.map((p) => (
+        <div 
+          key={p.id} 
+          style={{
+            background: "white",
+            padding: 15,
+            borderRadius: 10,
+            marginBottom: 15,
+            boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+          }}
+        >
+          <h3>{p.nombre}</h3>
+          <p style={{ fontSize: 18, fontWeight: "bold" }}>${p.precio}</p>
+          <p>{p.vendedor}</p>
+
+          <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
+            <button style={{
+              width: "100%",
+              padding: 10,
+              background: "#25D366",
+              color: "white",
+              border: "none",
+              borderRadius: 8
+            }}>
+              Comprar por WhatsApp
+            </button>
+          </a>
+        </div>
+      ))}
+
+    </div>
+  );
+}
