@@ -15,6 +15,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export default function Home() {
+  const [busquedaInput, setBusquedaInput] = useState("");
   const [busqueda, setBusqueda] = useState("");
   const [productos, setProductos] = useState([]);
 
@@ -63,7 +64,7 @@ export default function Home() {
   };
 
   const filtrados = productos.filter((p) =>
-    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    p.nombre?.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   return (
@@ -101,19 +102,34 @@ export default function Home() {
           Invitar por WhatsApp
         </button>
 
-        
-          <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
-    
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          style={{
-            width: "100%",
-            padding: 10,
-            marginBottom: 15,
-            borderRadius: 10,
-            border: "1px solid #ccc"
-          }}
-        />
+        {/* BUSCADOR CON BOTÓN */}
+        <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
+          <input
+            placeholder="Buscar productos..."
+            value={busquedaInput}
+            onChange={(e) => setBusquedaInput(e.target.value)}
+            style={{
+              flex: 1,
+              padding: 10,
+              borderRadius: 10,
+              border: "1px solid #ccc"
+            }}
+          />
+
+          <button
+            onClick={() => setBusqueda(busquedaInput)}
+            style={{
+              background: "#4facfe",
+              color: "white",
+              border: "none",
+              padding: "0 15px",
+              borderRadius: 10,
+              fontWeight: "bold"
+            }}
+          >
+            Buscar
+          </button>
+        </div>
 
         <h3>Publicar producto</h3>
 
