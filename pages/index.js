@@ -101,8 +101,9 @@ export default function Home() {
           Invitar por WhatsApp
         </button>
 
-        <input
-          placeholder="Buscar productos..."
+        
+          <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
+    
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           style={{
