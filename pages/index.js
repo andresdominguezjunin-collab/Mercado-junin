@@ -34,6 +34,15 @@ export default function Home() {
     window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`);
   };
 
+  const compartirProducto = (p) => {
+    const mensaje = `Mirá este producto en Mercado Junín 👇
+${p.nombre}
+💲 ${p.precio}
+📲 https://wa.me/${p.whatsapp}
+🔗 ${linkApp}`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`);
+  };
+
   const cargarProductos = async () => {
     const querySnapshot = await getDocs(collection(db, "productos"));
     const lista = [];
@@ -102,7 +111,6 @@ export default function Home() {
           Invitar por WhatsApp
         </button>
 
-        {/* BUSCADOR CON BOTÓN */}
         <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
           <input
             placeholder="Buscar productos..."
@@ -204,18 +212,20 @@ export default function Home() {
             <h3>{p.nombre}</h3>
             <p style={{ fontWeight: "bold" }}>${p.precio}</p>
 
-            <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
-              <button style={{
-                width: "100%",
-                background: "#25D366",
-                color: "white",
-                border: "none",
-                padding: 10,
-                borderRadius: 10
-              }}>
-                Comprar por WhatsApp
+            <div style={{ display: "flex", gap: 10 }}>
+              <a href={`https://wa.me/${p.whatsapp}`} target="_blank" style={{ flex: 1 }}>
+                <button style={btnComprar}>
+                  Comprar
+                </button>
+              </a>
+
+              <button
+                onClick={() => compartirProducto(p)}
+                style={btnCompartir}
+              >
+                Compartir
               </button>
-            </a>
+            </div>
           </div>
         ))}
 
@@ -230,4 +240,22 @@ const input = {
   marginBottom: 10,
   borderRadius: 10,
   border: "1px solid #ccc"
+};
+
+const btnComprar = {
+  width: "100%",
+  background: "#25D366",
+  color: "white",
+  border: "none",
+  padding: 10,
+  borderRadius: 10
+};
+
+const btnCompartir = {
+  width: "100%",
+  background: "#555",
+  color: "white",
+  border: "none",
+  padding: 10,
+  borderRadius: 10
 };
