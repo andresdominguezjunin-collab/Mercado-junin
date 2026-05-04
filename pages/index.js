@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
-
-// 🔥 FIREBASE
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
 
 // 🔥 CONFIG
 const firebaseConfig = {
@@ -43,7 +36,7 @@ export default function Home() {
     window.open(url, "_blank");
   };
 
-  // 🔥 CARGAR DESDE FIREBASE
+  // 🔥 CARGAR
   const cargarProductos = async () => {
     const querySnapshot = await getDocs(collection(db, "productos"));
     const lista = [];
@@ -57,7 +50,7 @@ export default function Home() {
     cargarProductos();
   }, []);
 
-  // 🔥 GUARDAR EN FIREBASE
+  // 🔥 GUARDAR
   const agregarProducto = async () => {
     if (!nuevo.nombre || !nuevo.precio || !nuevo.whatsapp) return;
 
@@ -79,91 +72,52 @@ export default function Home() {
   );
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea, #764ba2)",
-        padding: 20,
-        fontFamily: "Arial",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 500,
-          margin: "0 auto",
-          background: "white",
-          borderRadius: 20,
-          padding: 20,
+    <div style={{ padding: 20 }}>
+      <h1>Mercado Junín</h1>
+
+      <button onClick={invitarWhatsApp}>
+        Invitar por WhatsApp
+      </button>
+
+      <input
+        placeholder="Buscar..."
+        value={busqueda}
+        onChange={(e) => setBusqueda(e.target.value)}
+      />
+
+      <h3>Publicar</h3>
+
+      <input placeholder="Nombre" onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })} />
+      <input placeholder="Precio" onChange={(e) => setNuevo({ ...nuevo, precio: e.target.value })} />
+      <input placeholder="Vendedor" onChange={(e) => setNuevo({ ...nuevo, vendedor: e.target.value })} />
+      <input placeholder="WhatsApp" onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })} />
+
+      <input
+        type="file"
+        onChange={(e) => {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              setNuevo({ ...nuevo, imagen: reader.result });
+            };
+            reader.readAsDataURL(file);
+          }
         }}
-      >
-        <h1 style={{ textAlign: "center" }}>Mercado Junín</h1>
+      />
 
-        <button onClick={invitarWhatsApp} style={{ width: "100%", marginBottom: 20 }}>
-          Invitar por WhatsApp
-        </button>
+      <button onClick={agregarProducto}>Publicar</button>
 
-        <input
-          placeholder="Buscar productos..."
-          value={busqueda}
-          onChange={(e) => setBusqueda(e.target.value)}
-          style={{ width: "100%", marginBottom: 20 }}
-        />
-
-        <h3>Publicar producto</h3>
-
-        <input
-          placeholder="Nombre"
-          value={nuevo.nombre}
-          onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
-        />
-
-        <input
-          placeholder="Precio"
-          value={nuevo.precio}
-          onChange={(e) => setNuevo({ ...nuevo, precio: e.target.value })}
-        />
-
-        <input
-          placeholder="Vendedor"
-          value={nuevo.vendedor}
-          onChange={(e) => setNuevo({ ...nuevo, vendedor: e.target.value })}
-        />
-
-        <input
-          placeholder="WhatsApp"
-          value={nuevo.whatsapp}
-          onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })}
-        />
-
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (file) {
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                setNuevo({ ...nuevo, imagen: reader.result });
-              };
-              reader.readAsDataURL(file);
-            }
-          }}
-        />
-
-        <button onClick={agregarProducto}>Publicar</button>
-
-        {filtrados.map((p) => (
-          <div key={p.id} style={{ marginTop: 20 }}>
-            {p.imagen && <img src={p.imagen} style={{ width: "100%" }} />}
-            <h3>{p.nombre}</h3>
-            <p>${p.precio}</p>
-            <p>{p.vendedor}</p>
-            <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
-              <button>Comprar por WhatsApp</button>
-            </a>
-          </div>
-        ))}
-      </div>
+      {filtrados.map((p) => (
+        <div key={p.id}>
+          {p.imagen && <img src={p.imagen} width="100%" />}
+          <h3>{p.nombre}</h3>
+          <p>${p.precio}</p>
+          <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
+            <button>Comprar</button>
+          </a>
+        </div>
+      ))}
     </div>
   );
 }
