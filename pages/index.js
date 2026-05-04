@@ -15,40 +15,24 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export default function Home() {
-  const [busquedaInput, setBusquedaInput] = useState("");
-  const [busqueda, setBusqueda] = useState("");
   const [productos, setProductos] = useState([]);
+  const [vista, setVista] = useState("home");
+
+  const [usuario, setUsuario] = useState({
+    nombre: "",
+    whatsapp: ""
+  });
 
   const [nuevo, setNuevo] = useState({
     nombre: "",
     precio: "",
-    vendedor: "",
-    whatsapp: "",
-    imagen: "",
+    imagen: ""
   });
 
-  const linkApp = "https://TU-LINK-REAL.vercel.app";
-
-  const invitarWhatsApp = () => {
-    const mensaje = `Mirá esta app para comprar en Junín 👇\n${linkApp}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`);
-  };
-
-  const compartirProducto = (p) => {
-    const mensaje = `Mirá este producto en Mercado Junín 👇
-${p.nombre}
-💲 ${p.precio}
-📲 https://wa.me/${p.whatsapp}
-🔗 ${linkApp}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(mensaje)}`);
-  };
-
   const cargarProductos = async () => {
-    const querySnapshot = await getDocs(collection(db, "productos"));
+    const snap = await getDocs(collection(db, "productos"));
     const lista = [];
-    querySnapshot.forEach((doc) => {
-      lista.push({ ...doc.data(), id: doc.id });
-    });
+    snap.forEach(doc => lista.push({ ...doc.data(), id: doc.id }));
     setProductos(lista);
   };
 
@@ -56,112 +40,88 @@ ${p.nombre}
     cargarProductos();
   }, []);
 
-  const agregarProducto = async () => {
-    if (!nuevo.nombre || !nuevo.precio || !nuevo.whatsapp) return;
+  const guardarProducto = async () => {
+    if (!nuevo.nombre || !nuevo.precio || !usuario.whatsapp) return;
 
-    await addDoc(collection(db, "productos"), nuevo);
-
-    setNuevo({
-      nombre: "",
-      precio: "",
-      vendedor: "",
-      whatsapp: "",
-      imagen: "",
+    await addDoc(collection(db, "productos"), {
+      ...nuevo,
+      vendedor: usuario.nombre,
+      whatsapp: usuario.whatsapp
     });
 
+    setNuevo({ nombre: "", precio: "", imagen: "" });
+    setVista("home");
     cargarProductos();
   };
 
-  const filtrados = productos.filter((p) =>
-    p.nombre?.toLowerCase().includes(busqueda.toLowerCase())
-  );
+  // 🔵 HOME (productos)
+  if (vista === "home") {
+    return (
+      <div style={bg}>
+        <div style={card}>
+          
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <h2>Mercado Junín</h2>
+            <button onClick={() => setVista("cuenta")} style={btn}>
+              Mi cuenta
+            </button>
+          </div>
 
+          {productos.map(p => (
+            <div key={p.id} style={producto}>
+              {p.imagen && <img src={p.imagen} style={{ width: "100%", borderRadius: 10 }} />}
+              <h3>{p.nombre}</h3>
+              <p>${p.precio}</p>
+
+              <a href={`https://wa.me/${p.whatsapp}`} target="_blank">
+                <button style={btnComprar}>Comprar</button>
+              </a>
+            </div>
+          ))}
+
+        </div>
+      </div>
+    );
+  }
+
+  // 🟢 CUENTA
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "linear-gradient(135deg, #4facfe, #00f2fe)",
-      padding: 20,
-      display: "flex",
-      justifyContent: "center"
-    }}>
-      <div style={{
-        width: "100%",
-        maxWidth: 500,
-        background: "white",
-        borderRadius: 20,
-        padding: 20,
-        boxShadow: "0 10px 30px rgba(0,0,0,0.2)"
-      }}>
+    <div style={bg}>
+      <div style={card}>
 
-        <h1 style={{ textAlign: "center" }}>Mercado Junín</h1>
-
-        <button
-          onClick={invitarWhatsApp}
-          style={{
-            width: "100%",
-            background: "#25D366",
-            color: "white",
-            border: "none",
-            padding: 12,
-            borderRadius: 10,
-            fontWeight: "bold",
-            marginBottom: 15
-          }}
-        >
-          Invitar por WhatsApp
+        <button onClick={() => setVista("home")} style={btn}>
+          ← Volver
         </button>
 
-        <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
-          <input
-            placeholder="Buscar productos..."
-            value={busquedaInput}
-            onChange={(e) => setBusquedaInput(e.target.value)}
-            style={{
-              flex: 1,
-              padding: 10,
-              borderRadius: 10,
-              border: "1px solid #ccc"
-            }}
-          />
+        <h3>Mis datos</h3>
 
-          <button
-            onClick={() => setBusqueda(busquedaInput)}
-            style={{
-              background: "#4facfe",
-              color: "white",
-              border: "none",
-              padding: "0 15px",
-              borderRadius: 10,
-              fontWeight: "bold"
-            }}
-          >
-            Buscar
-          </button>
-        </div>
+        <input
+          placeholder="Tu nombre"
+          value={usuario.nombre}
+          onChange={(e) => setUsuario({ ...usuario, nombre: e.target.value })}
+          style={input}
+        />
+
+        <input
+          placeholder="Tu WhatsApp"
+          value={usuario.whatsapp}
+          onChange={(e) => setUsuario({ ...usuario, whatsapp: e.target.value })}
+          style={input}
+        />
 
         <h3>Publicar producto</h3>
 
-        <input placeholder="Nombre"
+        <input
+          placeholder="Nombre del producto"
           value={nuevo.nombre}
           onChange={(e) => setNuevo({ ...nuevo, nombre: e.target.value })}
           style={input}
         />
 
-        <input placeholder="Precio"
+        <input
+          placeholder="Precio"
           value={nuevo.precio}
           onChange={(e) => setNuevo({ ...nuevo, precio: e.target.value })}
-          style={input}
-        />
-
-        <input placeholder="Vendedor"
-          value={nuevo.vendedor}
-          onChange={(e) => setNuevo({ ...nuevo, vendedor: e.target.value })}
-          style={input}
-        />
-
-        <input placeholder="WhatsApp"
-          value={nuevo.whatsapp}
-          onChange={(e) => setNuevo({ ...nuevo, whatsapp: e.target.value })}
           style={input}
         />
 
@@ -177,62 +137,32 @@ ${p.nombre}
               reader.readAsDataURL(file);
             }
           }}
-          style={{ marginBottom: 10 }}
         />
 
-        <button
-          onClick={agregarProducto}
-          style={{
-            width: "100%",
-            background: "#4facfe",
-            color: "white",
-            border: "none",
-            padding: 12,
-            borderRadius: 10,
-            fontWeight: "bold"
-          }}
-        >
+        <button onClick={guardarProducto} style={btnPublicar}>
           Publicar
         </button>
-
-        {filtrados.map((p) => (
-          <div key={p.id} style={{
-            marginTop: 20,
-            padding: 10,
-            borderRadius: 15,
-            boxShadow: "0 5px 15px rgba(0,0,0,0.1)"
-          }}>
-            {p.imagen && (
-              <img src={p.imagen} style={{
-                width: "100%",
-                borderRadius: 10
-              }} />
-            )}
-
-            <h3>{p.nombre}</h3>
-            <p style={{ fontWeight: "bold" }}>${p.precio}</p>
-
-            <div style={{ display: "flex", gap: 10 }}>
-              <a href={`https://wa.me/${p.whatsapp}`} target="_blank" style={{ flex: 1 }}>
-                <button style={btnComprar}>
-                  Comprar
-                </button>
-              </a>
-
-              <button
-                onClick={() => compartirProducto(p)}
-                style={btnCompartir}
-              >
-                Compartir
-              </button>
-            </div>
-          </div>
-        ))}
 
       </div>
     </div>
   );
 }
+
+const bg = {
+  minHeight: "100vh",
+  background: "linear-gradient(135deg, #4facfe, #00f2fe)",
+  display: "flex",
+  justifyContent: "center",
+  padding: 20
+};
+
+const card = {
+  width: "100%",
+  maxWidth: 500,
+  background: "white",
+  borderRadius: 20,
+  padding: 20
+};
 
 const input = {
   width: "100%",
@@ -240,6 +170,14 @@ const input = {
   marginBottom: 10,
   borderRadius: 10,
   border: "1px solid #ccc"
+};
+
+const btn = {
+  background: "#4facfe",
+  color: "white",
+  border: "none",
+  padding: 10,
+  borderRadius: 10
 };
 
 const btnComprar = {
@@ -251,11 +189,19 @@ const btnComprar = {
   borderRadius: 10
 };
 
-const btnCompartir = {
+const btnPublicar = {
   width: "100%",
-  background: "#555",
+  background: "#4facfe",
   color: "white",
   border: "none",
+  padding: 12,
+  borderRadius: 10,
+  marginTop: 10
+};
+
+const producto = {
+  marginTop: 20,
   padding: 10,
-  borderRadius: 10
+  borderRadius: 10,
+  boxShadow: "0 5px 10px rgba(0,0,0,0.1)"
 };
