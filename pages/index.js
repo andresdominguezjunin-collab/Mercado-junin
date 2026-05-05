@@ -1,4 +1,4 @@
-// 🔥 VERSION NUEVA - PRUEBA
+// actualización // 🔥 VERSION NUEVA - PRUEBA
 import { useState, useEffect } from "react";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs } from "firebase/firestore";
